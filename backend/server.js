@@ -23,7 +23,11 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-const frontendDir = path.resolve(__dirname, '../frontend');
+const candidateFrontendDirs = [
+    path.resolve(__dirname, '../frontend'),
+    path.resolve(__dirname, './frontend')
+];
+const frontendDir = candidateFrontendDirs.find((dir) => fs.existsSync(dir)) || candidateFrontendDirs[0];
 
 getJwtSecret();
 
@@ -147,6 +151,14 @@ app.use((error, req, res, next) => {
 });
 
 const startServer = async () => {
+    console.log('Starting VISWASHANTHI HIGH SCHOOL service...');
+    console.log(`Node environment: ${process.env.NODE_ENV || 'development'}`);
+    console.log(`Port: ${PORT}`);
+    console.log(`Frontend directory: ${frontendDir}`);
+    console.log(`Frontend directory exists: ${fs.existsSync(frontendDir)}`);
+    console.log(`MongoDB URI configured: ${Boolean(process.env.MONGODB_URI)}`);
+    console.log(`JWT secret configured: ${Boolean(process.env.JWT_SECRET)}`);
+
     ensureUploadDirectories();
     await connectDB();
     await seedDefaults();
@@ -157,4 +169,17 @@ const startServer = async () => {
     });
 };
 
-startServer();
+process.on('unhandledRejection', (error) => {
+    console.error('Unhandled promise rejection during startup/runtime:', error);
+    process.exit(1);
+});
+
+process.on('uncaughtException', (error) => {
+    console.error('Uncaught exception during startup/runtime:', error);
+    process.exit(1);
+});
+
+startServer().catch((error) => {
+    console.error('Fatal startup error:', error);
+    process.exit(1);
+});
