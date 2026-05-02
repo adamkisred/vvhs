@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banner Management | VISWASHANTHI HIGH SCHOOL</title>
+    <script>document.documentElement.classList.add('admin-auth-pending');</script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body data-admin-page="banner" data-requires-auth="true">
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar" id="adminSidebar">
+            <div class="admin-brand">
+                <span class="admin-brand-mark"><i class="bi bi-mortarboard-fill"></i></span>
+                <span>VISWASHANTHI HIGH SCHOOL</span>
+            </div>
+            <nav class="admin-nav">
+                <a class="admin-nav-link" data-page="dashboard" href="dashboard.html"><i class="bi bi-grid"></i>Dashboard</a>
+                <a class="admin-nav-link active" data-page="banner" href="banner.html"><i class="bi bi-card-image"></i>Banners</a>
+                <a class="admin-nav-link" data-page="faculty" href="faculty.html"><i class="bi bi-people"></i>Faculty</a>
+                <a class="admin-nav-link" data-page="gallery" href="gallery.html"><i class="bi bi-images"></i>Gallery</a>
+                <a class="admin-nav-link" data-page="admissions" href="admissions.html"><i class="bi bi-journal-check"></i>Admissions</a>
+                <a class="admin-nav-link" data-page="settings" href="settings.html"><i class="bi bi-gear"></i>Settings</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-content">
+            <!-- Top Bar -->
+            <div class="admin-topbar">
+                <div class="d-flex align-items-center gap-3 admin-topbar-main">
+                    <button class="btn btn-outline-primary mobile-sidebar-toggle d-lg-none" id="sidebarToggle" type="button">
+                        <i class="bi bi-list"></i>
+                    </button>
+                    <div>
+                        <h1 class="h4 mb-1">Banner Management</h1>
+                        <p class="text-muted mb-0">Upload and manage homepage hero banners.</p>
+                    </div>
+                </div>
+                <div class="d-flex gap-2 admin-topbar-actions">
+                    <button class="btn btn-primary" id="createBannerBtn" data-bs-toggle="modal" data-bs-target="#bannerModal">
+                        <i class="bi bi-plus-lg me-2"></i>Add Banner
+                    </button>
+                    <button class="btn btn-outline-danger" data-logout>
+                        <i class="bi bi-box-arrow-right me-2"></i>Logout
+                    </button>
+                </div>
+            </div>
+
+            <!-- Banner Table -->
+            <div class="admin-surface admin-card mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-3 admin-section-head">
+                    <h2 class="h5 mb-0">Hero Banners</h2>
+                    <span class="badge bg-primary rounded-pill" id="bannerCount">0 Banners</span>
+                </div>
+                <div class="table-responsive">
+                    <table class="table align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th style="width: 120px;">Preview</th>
+                                <th>Content</th>
+                                <th style="width: 80px;">Order</th>
+                                <th style="width: 100px;">Status</th>
+                                <th class="text-end" style="width: 220px;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bannerTableBody">
+                            <tr>
+                                <td colspan="5" class="text-center py-5 text-muted">
+                                    <i class="bi bi-card-image fs-1 d-block mb-2"></i>
+                                    No banners found. Click "Add Banner" to create one.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Popup Banner Section -->
+            <div class="admin-surface admin-card">
+                <div class="page-header mb-3">
+                    <div>
+                        <h2 class="h5 mb-1">Website Opening Popup Banner</h2>
+                        <p class="text-muted mb-0">Upload the popup banner visitors see when the website opens.</p>
+                    </div>
+                </div>
+                <form id="popupBannerForm" class="admin-form">
+                    <div class="row g-3">
+                        <div class="col-lg-3 col-md-6">
+                            <label class="form-label">Title</label>
+                            <input class="form-control" type="text" name="title" placeholder="Admissions Open">
+                        </div>
+                        <div class="col-lg-3 col-md-6">
+                            <label class="form-label">Subtitle</label>
+                            <input class="form-control" type="text" name="subtitle" placeholder="Apply for the new academic year">
+                        </div>
+                        <div class="col-lg-2 col-md-6">
+                            <label class="form-label">Button Text</label>
+                            <input class="form-control" type="text" name="ctaText" value="Apply Now">
+                        </div>
+                        <div class="col-lg-2 col-md-6">
+                            <label class="form-label">Link</label>
+                            <input class="form-control" type="text" name="ctaLink" value="admission.html">
+                        </div>
+                        <div class="col-lg-2 col-md-6">
+                            <label class="form-label">Image</label>
+                            <input class="form-control" type="file" name="image" accept="image/*">
+                        </div>
+                        <div class="col-lg-3 col-md-6 d-flex align-items-end">
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" name="isActive" id="popupActive" checked>
+                                <label class="form-check-label fw-semibold" for="popupActive">Show popup on website open</label>
+                            </div>
+                        </div>
+                        <div class="col-lg-9 col-md-6 text-lg-end">
+                            <button class="btn btn-outline-danger me-2" type="button" id="deletePopupBannerBtn">
+                                <i class="bi bi-trash me-2"></i>Delete Popup Banner
+                            </button>
+                            <button class="btn btn-primary" type="submit">
+                                <i class="bi bi-save me-2"></i>Save Popup Banner
+                            </button>
+                        </div>
+                    </div>
+                </form>
+                <div id="popupBannerPreview" class="mt-4"></div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add/Edit Banner Modal -->
+    <div class="modal fade" id="bannerModal" tabindex="-1" aria-labelledby="bannerModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content border-0 rounded-4 shadow-lg">
+                <div class="modal-header bg-light rounded-top-4 border-0 px-4 py-3">
+                    <h5 class="modal-title fw-bold" id="bannerModalLabel">
+                        <i class="bi bi-plus-circle me-2"></i>Add Banner
+                    </h5>
+                    <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form id="bannerForm" class="admin-form">
+                        <input type="hidden" name="bannerId" id="bannerId">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Title <span class="text-danger">*</span></label>
+                                <input class="form-control" type="text" name="title" placeholder="Enter banner title" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Subtitle</label>
+                                <input class="form-control" type="text" name="subtitle" placeholder="Enter banner subtitle">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">CTA Button Text</label>
+                                <input class="form-control" type="text" name="ctaText" placeholder="e.g., Apply Now, Learn More">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">CTA Link</label>
+                                <input class="form-control" type="text" name="ctaLink" value="admission.html" placeholder="e.g., admission.html">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Display Order</label>
+                                <input class="form-control" type="number" name="order" value="0" min="0" placeholder="0">
+                            </div>
+                            <div class="col-md-8">
+                                <label class="form-label">Banner Image <span class="text-danger">*</span></label>
+                                <input class="form-control" type="file" name="image" accept="image/*" id="bannerImageInput">
+                                <small class="text-muted">Recommended size: 1920x600px, Max: 5MB</small>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="isActive" id="bannerActive" checked>
+                                    <label class="form-check-label fw-semibold" for="bannerActive">Active</label>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer border-0 px-4 py-3">
+                    <button class="btn btn-outline-secondary" type="button" data-bs-dismiss="modal">
+                        <i class="bi bi-x-lg me-2"></i>Cancel
+                    </button>
+                    <button class="btn btn-primary" type="submit" form="bannerForm">
+                        <i class="bi bi-check-lg me-2"></i>Save Banner
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="VISWASHANTHI HIGH SCHOOL, Allagadda offers quality education from Nursery to 10th with caring faculty, modern facilities, and an easy online admission system.">
+    <title>VISWASHANTHI HIGH SCHOOL | Allagadda</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="loading-screen" id="loadingScreen">
+        <div class="text-center">
+            <div class="loader-mark"><img class="brand-logo" src="school images/logo.png" alt="VISWASHANTHI HIGH SCHOOL logo"></div>
+            <h5 class="fw-bold mb-2">VISWASHANTHI HIGH SCHOOL</h5>
+            <p class="text-muted mb-0">Preparing your experience...</p>
+        </div>
+    </div>
+
+    <div class="admission-popup" id="admissionPopup" aria-hidden="true">
+        <div class="admission-popup-card" role="dialog" aria-modal="true" aria-labelledby="admissionPopupTitle">
+            <button class="popup-close" type="button" data-popup-close aria-label="Close admission form">
+                <i class="bi bi-x-lg"></i>
+            </button>
+            <div class="popup-visual">
+                <span class="tag-chip">Admissions Open</span>
+                <h2 id="admissionPopupTitle">Start your child's admission enquiry</h2>
+                <p>Share the details below and our school team will contact you with class availability and next steps.</p>
+                <div class="popup-mini-stats">
+                    <span><strong>25+</strong> Years trust</span>
+                    <span><strong>10+</strong> Class levels</span>
+                </div>
+            </div>
+            <form class="popup-form" id="admissionPopupForm">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Student Name</label>
+                        <input class="form-control" type="text" name="studentName" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Class</label>
+                        <select class="form-select" name="className" required>
+                            <option value="">Select Class</option>
+                            <option>Nursery</option>
+                            <option>LKG</option>
+                            <option>UKG</option>
+                            <option>1st Class</option>
+                            <option>2nd Class</option>
+                            <option>3rd Class</option>
+                            <option>4th Class</option>
+                            <option>5th Class</option>
+                            <option>6th Class</option>
+                            <option>7th Class</option>
+                            <option>8th Class</option>
+                            <option>9th Class</option>
+                            <option>10th Class</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Parent Name</label>
+                        <input class="form-control" type="text" name="parentName" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Phone</label>
+                        <input class="form-control" type="tel" name="phone" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Email</label>
+                        <input class="form-control" type="email" name="email" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Address</label>
+                        <input class="form-control" type="text" name="address" required>
+                    </div>
+                    <div class="col-12 d-flex flex-wrap gap-2 justify-content-end">
+                        <button class="btn btn-soft" type="button" data-popup-close>Later</button>
+                        <button class="btn btn-brand" type="submit">Submit Enquiry</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <header class="navbar-shell">
+        <nav class="navbar navbar-expand-lg">
+            <div class="container">
+                <a class="navbar-brand d-flex align-items-center gap-3" href="index.html">
+                    <span class="brand-mark"><img class="brand-logo" src="school images/logo.png" alt="VISWASHANTHI HIGH SCHOOL logo"></span>
+                    <span class="brand-text">
+                        <strong data-school-name>VISWASHANTHI HIGH SCHOOL</strong>
+                        <small class="text-muted fw-semibold">Allagadda</small>
+                    </span>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="mainNav">
+                    <ul class="navbar-nav nav-tile-list ms-auto align-items-lg-center gap-lg-2">
+                        <li class="nav-item"><a class="nav-link active" href="index.html">Home</a></li>
+                        <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
+                        <li class="nav-item"><a class="nav-link" href="facilities.html">Facilities</a></li>
+                        <li class="nav-item"><a class="nav-link" href="faculty.html">Faculty</a></li>
+                        <li class="nav-item"><a class="nav-link" href="gallery.html">Gallery</a></li>
+                        <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+                        <li class="nav-item ms-lg-2"><a class="btn btn-brand" href="admission.html">Apply for Admission</a></li>
+                        <li class="nav-item ms-lg-2"><a class="btn btn-outline-primary btn-sm rounded-pill d-flex align-items-center gap-1" href="admin/login.html" target="_blank"><i class="bi bi-shield-lock"></i> Login</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero-section">
+            <div class="hero-shell" data-aos="fade-up">
+                <div class="hero-carousel hero-carousel-full" id="heroCarousel">
+                    <div class="hero-carousel-track" id="bannerContainer"></div>
+                    <div class="hero-carousel-dots" id="heroCarouselDots"></div>
+                    <div class="hero-carousel-controls">
+                        <button class="hero-carousel-btn" id="heroPrevBtn" type="button" aria-label="Previous slide"><i class="bi bi-chevron-left"></i></button>
+                        <button class="hero-carousel-btn" id="heroNextBtn" type="button" aria-label="Next slide"><i class="bi bi-chevron-right"></i></button>
+                    </div>
+                </div>
+                <div class="hero-content-panel">
+                    <div class="container">
+                        <div class="hero-panel-grid">
+                            <div class="hero-copy hero-copy-overlay">
+                                <span class="hero-badge"><i class="bi bi-geo-alt-fill"></i> <span data-school-location>Allagadda</span></span>
+                                <h1 class="hero-title">Future-ready learning with values, discipline, and care.</h1>
+                                <p class="hero-text" id="heroTagline">Nurturing curiosity, character, and confidence.</p>
+                                <div class="hero-actions">
+                                    <a class="btn btn-brand" href="admission.html">Start Admission</a>
+                                    <a class="btn btn-soft" href="about.html">Explore School</a>
+                                </div>
+                            </div>
+                            <div class="hero-admission-card">
+                                <span class="tag-chip mb-3">Admissions Open</span>
+                                <h2>Classes available for <span data-school-classes>Nursery to 10th</span>.</h2>
+                                <p>Submit an enquiry online and our team will guide your family through the next steps.</p>
+                                <a class="btn btn-brand" href="admission.html">Apply Now</a>
+                            </div>
+                        </div>
+                        <div class="hero-stats hero-stats-overlay">
+                            <div class="stat-card">
+                                <span class="stat-number" data-target="25">25+</span>
+                                <span class="text-muted">Years of trust</span>
+                            </div>
+                            <div class="stat-card">
+                                <span class="stat-number" id="facultyCount" data-target="20">20+</span>
+                                <span class="text-muted">Faculty mentors</span>
+                            </div>
+                            <div class="stat-card">
+                                <span class="stat-number" data-target="10">10+</span>
+                                <span class="text-muted">Class levels</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-padding compact-section">
+            <div class="container">
+                <div class="row g-4 align-items-stretch">
+                    <div class="col-lg-6" data-aos="fade-up">
+                        <div class="glass-card p-4 p-lg-5 h-100 rounded-4">
+                            <span class="section-subtitle"><i class="bi bi-building me-2"></i>About Us</span>
+                            <h2 class="section-title">An education journey built around excellence and ethics.</h2>
+                            <p class="section-text mb-0" id="aboutContent">VISWASHANTHI HIGH SCHOOL offers meaningful learning experiences, individual attention, and strong academic preparation for every child.</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-6" data-aos="fade-up" data-aos-delay="100">
+                        <div class="about-visual glass-card h-100 rounded-4 overflow-hidden">
+                            <div class="campus-image-card rounded-4 overflow-hidden mb-3">
+                                <img src="school images/vhs.png" alt="VISWASHANTHI HIGH SCHOOL campus building" loading="lazy">
+                            </div>
+                            <h3 class="fw-bold text-white">A campus families can instantly trust</h3>
+                            <p class="mb-0 text-white-50">The campus itself reflects our school culture: open, disciplined, welcoming, and designed for focused learning.</p>
+                            <div class="about-highlight">
+                                <div class="mini-card">
+                                    <div class="d-flex align-items-center gap-2 mb-1">
+                                        <i class="bi bi-lightbulb text-warning"></i>
+                                        <h4 class="fw-bold mb-0 text-white">Holistic Learning</h4>
+                                    </div>
+                                    <p class="mb-0 small text-white-50">Balanced focus on academics, values, and communication.</p>
+                                </div>
+                                <div class="mini-card">
+                                    <div class="d-flex align-items-center gap-2 mb-1">
+                                        <i class="bi bi-shield-check text-success"></i>
+                                        <h4 class="fw-bold mb-0 text-white">Safe Campus</h4>
+                                    </div>
+                                    <p class="mb-0 small text-white-50">A supportive environment for every age group.</p>
+                                </div>
+                                <div class="mini-card">
+                                    <div class="d-flex align-items-center gap-2 mb-1">
+                                        <i class="bi bi-people text-info"></i>
+                                        <h4 class="fw-bold mb-0 text-white">Experienced Teachers</h4>
+                                    </div>
+                                    <p class="mb-0 small text-white-50">Mentoring-led classroom engagement and guidance.</p>
+                                </div>
+                                <div class="mini-card">
+                                    <div class="d-flex align-items-center gap-2 mb-1">
+                                        <i class="bi bi-trophy text-warning"></i>
+                                        <h4 class="fw-bold mb-0 text-white">Strong Results</h4>
+                                    </div>
+                                    <p class="mb-0 small text-white-50">Steady preparation from Nursery through 10th.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-padding pt-0">
+            <div class="container">
+                <div class="text-center mb-3" data-aos="fade-up">
+                    <span class="section-subtitle mx-auto"><i class="bi bi-star-fill me-2"></i>Campus Resources</span>
+                    <h2 class="section-title">Facilities that empower learning</h2>
+                    <p class="section-text mx-auto">We provide a modern, safe, and engaging environment where every student can discover their full potential.</p>
+                </div>
+                <div class="row g-3">
+                    <div class="col-md-6 col-xl-4" data-aos="fade-up">
+                        <div class="facility-card text-center">
+                            <div class="icon-bubble mx-auto"><i class="bi bi-laptop"></i></div>
+                            <h4 class="fw-bold">Digital Classrooms</h4>
+                            <p class="mb-0 text-muted">Interactive learning tools to make lessons engaging and practical.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-xl-4" data-aos="fade-up" data-aos-delay="100">
+                        <div class="facility-card text-center">
+                            <div class="icon-bubble mx-auto"><i class="bi bi-book-half"></i></div>
+                            <h4 class="fw-bold">Library Support</h4>
+                            <p class="mb-0 text-muted">Reading spaces and curated materials that strengthen independent learning.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-xl-4" data-aos="fade-up" data-aos-delay="200">
+                        <div class="facility-card text-center">
+                            <div class="icon-bubble mx-auto"><i class="bi bi-dribbble"></i></div>
+                            <h4 class="fw-bold">Sports & Activity</h4>
+                            <p class="mb-0 text-muted">Outdoor play and co-curricular opportunities that build confidence and teamwork.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-xl-4" data-aos="fade-up" data-aos-delay="300">
+                        <div class="facility-card text-center">
+                            <div class="icon-bubble mx-auto"><i class="bi bi-shield-check"></i></div>
+                            <h4 class="fw-bold">Student Safety</h4>
+                            <p class="mb-0 text-muted">Disciplined campus operations and attentive staff for daily student wellbeing.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-xl-4" data-aos="fade-up" data-aos-delay="400">
+                        <div class="facility-card text-center">
+                            <div class="icon-bubble mx-auto"><i class="bi bi-house-heart"></i></div>
+                            <h4 class="fw-bold">Boys Hostel</h4>
+                            <p class="mb-0 text-muted">Supervised residential care with disciplined routines, study time, and safe daily support.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-xl-4" data-aos="fade-up" data-aos-delay="500">
+                        <div class="facility-card text-center">
+                            <div class="icon-bubble mx-auto"><i class="bi bi-house-check"></i></div>
+                            <h4 class="fw-bold">Girls Hostel</h4>
+                            <p class="mb-0 text-muted">A separate, secure hostel environment with attentive care for girls and academic focus.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-padding pt-0">
+            <div class="container">
+                <div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-3">
+                    <div>
+                        <span class="section-subtitle"><i class="bi bi-people me-2"></i>Faculty</span>
+                        <h2 class="section-title mb-0">Meet the mentors shaping every learner.</h2>
+                    </div>
+                    <a class="btn btn-soft" href="faculty.html">View All Faculty</a>
+                </div>
+                <div class="row g-3" id="facultyGrid"></div>
+            </div>
+        </section>
+
+        <section class="section-padding pt-0">
+            <div class="container">
+                <div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-3">
+                    <div>
+                        <span class="section-subtitle"><i class="bi bi-images me-2"></i>Gallery</span>
+                        <h2 class="section-title mb-0">Life at VISWASHANTHI HIGH SCHOOL.</h2>
+                    </div>
+                    <a class="btn btn-soft" href="gallery.html">Open Full Gallery</a>
+                </div>
+                <div class="gallery-grid" id="galleryPreview"></div>
+            </div>
+        </section>
+
+        <section class="section-padding pt-0">
+            <div class="container">
+                <div class="row g-4 align-items-center">
+                    <div class="col-lg-5" data-aos="fade-right">
+                        <span class="section-subtitle"><i class="bi bi-pencil-square me-2"></i>Admission</span>
+                        <h2 class="section-title">Make the next school year count.</h2>
+                        <p class="section-text">Submit your admission enquiry online and our team will guide you through the process. We welcome students from Nursery to 10th.</p>
+                    </div>
+                    <div class="col-lg-7" data-aos="fade-left">
+                        <div class="form-shell">
+                            <div id="admissionSuccess" class="d-none mb-3"></div>
+                            <form id="admissionForm">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Student Name</label>
+                                        <input class="form-control" type="text" name="studentName" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Class</label>
+                                        <select class="form-select" name="className" required>
+                                            <option value="">Select Class</option>
+                                            <option>Nursery</option>
+                                            <option>LKG</option>
+                                            <option>UKG</option>
+                                            <option>1st Class</option>
+                                            <option>2nd Class</option>
+                                            <option>3rd Class</option>
+                                            <option>4th Class</option>
+                                            <option>5th Class</option>
+                                            <option>6th Class</option>
+                                            <option>7th Class</option>
+                                            <option>8th Class</option>
+                                            <option>9th Class</option>
+                                            <option>10th Class</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Parent Name</label>
+                                        <input class="form-control" type="text" name="parentName" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Phone</label>
+                                        <input class="form-control" type="tel" name="phone" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Email</label>
+                                        <input class="form-control" type="email" name="email" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Address</label>
+                                        <input class="form-control" type="text" name="address" required>
+                                    </div>
+                                    <div class="col-12">
+                                        <button class="btn btn-brand" type="submit">Submit Admission Form</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-padding pt-0">
+            <div class="container">
+                <div class="text-center mb-3" data-aos="fade-up">
+                    <span class="section-subtitle mx-auto"><i class="bi bi-envelope-paper me-2"></i>Get in Touch</span>
+                    <h2 class="section-title">We're here to help</h2>
+                </div>
+                <div class="row g-3">
+                    <div class="col-lg-4">
+                        <div class="contact-card h-100 text-center">
+                            <div class="icon-bubble mx-auto"><i class="bi bi-telephone"></i></div>
+                            <h4 class="fw-bold">Call Us</h4>
+                            <p class="text-muted mb-0" data-school-phone>+91 90000 00000</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="contact-card h-100 text-center">
+                            <div class="icon-bubble mx-auto"><i class="bi bi-envelope-open"></i></div>
+                            <h4 class="fw-bold">Email</h4>
+                            <p class="text-muted mb-0" data-school-email>info@viswashanthischool.com</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="contact-card h-100 text-center">
+                            <div class="icon-bubble mx-auto"><i class="bi bi-geo-alt"></i></div>
+                            <h4 class="fw-bold">Visit Campus</h4>
+                            <p class="text-muted mb-0" data-school-address>Main Road, Allagadda, Andhra Pradesh</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer-shell">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-5">
+                    <h4 class="footer-title" data-school-name>VISWASHANTHI HIGH SCHOOL</h4>
+                    <p class="mb-0">A trusted school community in Allagadda focused on academic growth, values, and confidence from Nursery to 10th.</p>
+                </div>
+                <div class="col-md-3">
+                    <h5 class="footer-title">Quick Links</h5>
+                    <a class="footer-link" href="about.html">About</a>
+                    <a class="footer-link" href="faculty.html">Faculty</a>
+                    <a class="footer-link" href="gallery.html">Gallery</a>
+                    <a class="footer-link" href="admission.html">Admission</a>
+                </div>
+                <div class="col-md-4">
+                    <h5 class="footer-title">Contact</h5>
+                    <p class="mb-2" data-school-phone>+91 90000 00000</p>
+                    <p class="mb-2" data-school-email>info@viswashanthischool.com</p>
+                    <p class="mb-0" data-school-address>Main Road, Allagadda, Andhra Pradesh</p>
+                </div>
+            </div>
+            <hr class="border-light opacity-10 my-4">
+            <p class="mb-0 small text-white-50">© 2026 VISWASHANTHI HIGH SCHOOL. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

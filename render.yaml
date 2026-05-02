@@ -1,0 +1,38 @@
+services:
+  - type: web
+    name: viswashanthi-school
+    runtime: node
+    plan: free
+    rootDir: .
+    buildCommand: cd backend && npm ci
+    startCommand: cd backend && npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_MEMORY_FALLBACK
+        value: "false"
+      - key: JWT_EXPIRES_IN
+        value: 1d
+      - key: ALLOWED_ORIGINS
+        sync: false
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: ADMIN_USERNAME
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: MAIL_HOST
+        sync: false
+      - key: MAIL_PORT
+        sync: false
+      - key: MAIL_SECURE
+        sync: false
+      - key: MAIL_USER
+        sync: false
+      - key: MAIL_PASS
+        sync: false
+      - key: ADMISSION_RECEIVER_EMAIL
+        sync: false

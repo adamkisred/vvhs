@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | VISWASHANTHI HIGH SCHOOL</title>
+    <script>document.documentElement.classList.add('admin-auth-pending');</script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body data-admin-page="dashboard" data-requires-auth="true">
+    <div class="admin-layout">
+        <aside class="admin-sidebar" id="adminSidebar">
+            <div class="admin-brand">
+                <span class="admin-brand-mark"><i class="bi bi-mortarboard-fill"></i></span>
+                <span>VISWASHANTHI HIGH SCHOOL</span>
+            </div>
+            <nav class="admin-nav">
+                <a class="admin-nav-link active" data-page="dashboard" href="dashboard.html"><i class="bi bi-grid"></i>Dashboard</a>
+                <a class="admin-nav-link" data-page="banner" href="banner.html"><i class="bi bi-card-image"></i>Banners</a>
+                <a class="admin-nav-link" data-page="faculty" href="faculty.html"><i class="bi bi-people"></i>Faculty</a>
+                <a class="admin-nav-link" data-page="gallery" href="gallery.html"><i class="bi bi-images"></i>Gallery</a>
+                <a class="admin-nav-link" data-page="admissions" href="admissions.html"><i class="bi bi-journal-check"></i>Admissions</a>
+                <a class="admin-nav-link" data-page="settings" href="settings.html"><i class="bi bi-gear"></i>Settings</a>
+            </nav>
+        </aside>
+        <main class="admin-content">
+            <div class="admin-topbar">
+                <div class="d-flex align-items-center gap-3">
+                    <button class="btn btn-outline-primary mobile-sidebar-toggle d-lg-none" id="sidebarToggle" type="button">
+                        <i class="bi bi-list"></i>
+                    </button>
+                    <div>
+                        <h1 class="h4 mb-1">Dashboard Overview</h1>
+                        <p class="text-muted mb-0">Welcome, <span data-admin-name>Administrator</span></p>
+                    </div>
+                </div>
+                <button class="btn btn-outline-danger" data-logout>
+                    <i class="bi bi-box-arrow-right me-2"></i>Logout
+                </button>
+            </div>
+            <div class="row g-3 mb-4" id="statsGrid"></div>
+            <div class="admin-surface admin-card">
+                <div class="page-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <div>
+                        <h2 class="h5 mb-1">Recent Admissions</h2>
+                        <p class="text-muted mb-0">Latest student applications submitted through the public website.</p>
+                    </div>
+                    <a class="btn btn-primary" href="admissions.html">
+                        <i class="bi bi-arrow-right me-2"></i>Manage Admissions
+                    </a>
+                </div>
+                <div class="table-responsive">
+                    <table class="table align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Student</th>
+                                <th>Class</th>
+                                <th>Phone</th>
+                                <th>Status</th>
+                                <th class="d-none d-md-table-cell">Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recentAdmissions">
+                            <tr>
+                                <td colspan="5" class="text-center py-4 text-muted">
+                                    <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                                    No recent admissions.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+backend/node_modules
+backend/uploads/banners/*
+backend/uploads/faculty/*
+backend/uploads/gallery/*
+!backend/uploads/banners/.gitkeep
+!backend/uploads/faculty/.gitkeep
+!backend/uploads/gallery/.gitkeep
+backend/.env
+.DS_Store
+Thumbs.db
