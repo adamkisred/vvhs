@@ -16,6 +16,7 @@ const settingsRoutes = require('./routes/settingsRoutes');
 const { cleanupUnusedUploads } = require('./utils/uploadCleanup');
 const { getJwtSecret } = require('./utils/authSecurity');
 const { securityHeaders } = require('./utils/securityHeaders');
+const { verifyMailConfiguration } = require('./utils/emailService');
 const Admin = require('./models/Admin');
 const Settings = require('./models/Settings');
 
@@ -158,11 +159,19 @@ const startServer = async () => {
     console.log(`Frontend directory exists: ${fs.existsSync(frontendDir)}`);
     console.log(`MongoDB URI configured: ${Boolean(process.env.MONGODB_URI)}`);
     console.log(`JWT secret configured: ${Boolean(process.env.JWT_SECRET)}`);
+    console.log(`Mail host configured: ${Boolean(process.env.MAIL_HOST)}`);
+    console.log(`Mail user configured: ${Boolean(process.env.MAIL_USER)}`);
+    console.log(`Mail pass configured: ${Boolean(process.env.MAIL_PASS)}`);
 
     ensureUploadDirectories();
     await connectDB();
     await seedDefaults();
     await cleanupUnusedUploads();
+
+    const mailStatus = await verifyMailConfiguration();
+    console.log(`Mail configured: ${mailStatus.configured}`);
+    console.log(`Mail verified: ${mailStatus.verified}`);
+    console.log(`Mail status: ${mailStatus.message}`);
 
     app.listen(PORT, () => {
         console.log(`Server running on http://localhost:${PORT}`);

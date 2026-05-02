@@ -1,6 +1,7 @@
 const nodemailer = require('nodemailer');
 
 const getTrimmedEnv = (key, fallback = '') => String(process.env[key] ?? fallback).trim();
+let transportPromise = null;
 
 const formatMailError = (error) => {
     const message = String(error?.message || '');
@@ -39,6 +40,41 @@ const createTransportFromEnv = async () => {
     });
 };
 
+const getTransport = async () => {
+    if (!transportPromise) {
+        transportPromise = createTransportFromEnv();
+    }
+
+    return transportPromise;
+};
+
+const verifyMailConfiguration = async () => {
+    const transport = await getTransport();
+
+    if (!transport) {
+        return {
+            configured: false,
+            verified: false,
+            message: 'MAIL_HOST, MAIL_USER, or MAIL_PASS is missing.'
+        };
+    }
+
+    try {
+        await transport.verify();
+        return {
+            configured: true,
+            verified: true,
+            message: 'SMTP connection verified successfully.'
+        };
+    } catch (error) {
+        return {
+            configured: true,
+            verified: false,
+            message: formatMailError(error)
+        };
+    }
+};
+
 const getSchoolMailbox = () => getTrimmedEnv('MAIL_USER');
 const getAdminInbox = () => getTrimmedEnv('ADMISSION_RECEIVER_EMAIL') || getSchoolMailbox();
 
@@ -75,7 +111,7 @@ const infoTable = (rows) => `
 `;
 
 const sendAdmissionNotification = async (admission, schoolProfile = {}) => {
-    const transport = await createTransportFromEnv();
+    const transport = await getTransport();
 
     if (!transport) {
         return {
@@ -191,7 +227,7 @@ Our team will contact you soon with the next steps.
 };
 
 const sendAdmissionsReportEmail = async ({ recipientEmail, pdfBuffer, fileName, admissions, schoolName, schoolAddress }) => {
-    const transport = await createTransportFromEnv();
+    const transport = await getTransport();
 
     if (!transport) {
         throw new Error('Backend mail configuration is missing.');
@@ -232,7 +268,7 @@ const sendAdmissionsReportEmail = async ({ recipientEmail, pdfBuffer, fileName, 
 };
 
 const sendContactNotification = async ({ contact, schoolName, schoolAddress }) => {
-    const transport = await createTransportFromEnv();
+    const transport = await getTransport();
 
     if (!transport) {
         throw new Error('Backend mail configuration is missing.');
@@ -321,5 +357,6 @@ module.exports = {
     sendAdmissionNotification,
     sendAdmissionsReportEmail,
     sendContactNotification,
-    formatMailError
+    formatMailError,
+    verifyMailConfiguration
 };
