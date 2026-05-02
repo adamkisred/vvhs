@@ -684,10 +684,10 @@ a {
 .faculty-photo-wrap {
     width: 100%;
     aspect-ratio: 4 / 4.6;
-    max-height: 320px;
+    max-height: 270px;
     overflow: hidden;
     border-radius: 20px;
-    margin-bottom: 14px;
+    margin-bottom: 12px;
     background: linear-gradient(180deg, rgba(36, 111, 208, 0.06), rgba(36, 111, 208, 0.12));
 }
 
@@ -707,13 +707,15 @@ a {
 }
 
 .faculty-card-pro {
-    padding: 14px;
-    border-radius: 24px;
+    max-width: 360px;
+    margin: 0 auto;
+    padding: 12px;
+    border-radius: 22px;
     box-shadow: 0 18px 34px rgba(19, 38, 61, 0.08);
 }
 
 .faculty-meta {
-    padding: 0.1rem 0.15rem 0.2rem;
+    padding: 0.05rem 0.1rem 0.15rem;
 }
 
 .faculty-topline {
@@ -721,7 +723,7 @@ a {
     align-items: center;
     justify-content: space-between;
     gap: 0.75rem;
-    margin-bottom: 0.7rem;
+    margin-bottom: 0.55rem;
 }
 
 .faculty-experience {
@@ -733,22 +735,22 @@ a {
 }
 
 .faculty-name {
-    font-size: 1.15rem;
+    font-size: 1.02rem;
     line-height: 1.15;
-    margin-bottom: 0.35rem;
+    margin-bottom: 0.25rem;
     color: var(--brand-dark);
 }
 
 .faculty-qualification {
-    font-size: 0.82rem;
+    font-size: 0.78rem;
     font-weight: 600;
     color: var(--brand-primary);
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.4rem;
 }
 
 .faculty-description {
-    font-size: 0.84rem;
-    line-height: 1.55;
+    font-size: 0.8rem;
+    line-height: 1.5;
     color: var(--text-muted);
     margin-bottom: 0;
     display: -webkit-box;
@@ -1531,7 +1533,7 @@ img {
     }
     .faculty-photo-wrap {
         aspect-ratio: 4 / 4.9;
-        max-height: 280px;
+        max-height: 240px;
     }
     .about-highlight {
         grid-template-columns: 1fr;
@@ -1638,14 +1640,15 @@ img {
         padding: 12px;
     }
     .faculty-card-pro {
+        max-width: 330px;
         border-radius: 20px;
     }
     .faculty-name {
-        font-size: 1.02rem;
+        font-size: 0.96rem;
     }
     .faculty-description {
         -webkit-line-clamp: 4;
-        font-size: 0.8rem;
+        font-size: 0.76rem;
     }
     .gallery-card {
         padding: 0.65rem;

@@ -453,7 +453,7 @@ const renderFacultyCards = (faculty, selector, limit) => {
 
     const items = limit ? faculty.slice(0, limit) : faculty;
     const isFacultyPage = selector === '#facultyPageGrid';
-    const columnClass = isFacultyPage ? 'col-sm-6 col-lg-4 col-xl-3' : 'col-sm-6 col-lg-4';
+    const columnClass = isFacultyPage ? 'col-sm-6 col-lg-4 col-xl-3' : 'col-sm-6 col-lg-4 col-xxl-3';
 
     if (!items.length) {
         container.innerHTML = `
