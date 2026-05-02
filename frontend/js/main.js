@@ -452,6 +452,8 @@ const renderFacultyCards = (faculty, selector, limit) => {
     if (!container) return;
 
     const items = limit ? faculty.slice(0, limit) : faculty;
+    const isFacultyPage = selector === '#facultyPageGrid';
+    const columnClass = isFacultyPage ? 'col-sm-6 col-lg-4 col-xl-3' : 'col-sm-6 col-lg-4';
 
     if (!items.length) {
         container.innerHTML = `
@@ -469,17 +471,20 @@ const renderFacultyCards = (faculty, selector, limit) => {
     container.innerHTML = items
         .map(
             (member) => `
-                <div class="col-md-6 col-xl-4" data-aos="fade-up">
-                    <article class="faculty-card hover-lift">
+                <div class="${columnClass}" data-aos="fade-up">
+                    <article class="faculty-card faculty-card-pro hover-lift">
                         <div class="faculty-photo-wrap">
                             <img class="faculty-photo" src="${getImageUrl(member.photo)}" alt="${escapeHtml(member.name)}" loading="lazy">
                         </div>
                         <div class="faculty-meta">
-                            <span class="badge bg-primary-soft text-primary mb-2">${escapeHtml(member.subject)}</span>
-                            <h4 class="fw-bold mb-1">${escapeHtml(member.name)}</h4>
-                            <p class="text-muted small mb-2">${escapeHtml(member.qualification || 'Senior Faculty')}</p>
-                            <p class="mb-0 text-muted small opacity-75">${escapeHtml(
-                                member.bio || `${member.name} is a dedicated educator specializing in ${member.subject}.`
+                            <div class="faculty-topline">
+                                <span class="badge bg-primary-soft text-primary">${escapeHtml(member.subject)}</span>
+                                <span class="faculty-experience">${escapeHtml(member.experience || 'Faculty')}</span>
+                            </div>
+                            <h4 class="faculty-name">${escapeHtml(member.name)}</h4>
+                            <p class="faculty-qualification">${escapeHtml(member.qualification || 'Dedicated academic mentor')}</p>
+                            <p class="faculty-description">${escapeHtml(
+                                member.bio || `${member.name} guides students in ${member.subject} with clarity, care, and consistent academic support.`
                             )}</p>
                         </div>
                     </article>
@@ -514,11 +519,14 @@ const buildGalleryCards = (gallery, selector, limit) => {
                 <article class="gallery-card hover-lift" data-category="${escapeHtml(image.category)}" data-aos="zoom-in">
                     <img class="gallery-photo" src="${getImageUrl(image.image)}" alt="${escapeHtml(image.title)}" loading="lazy">
                     <div class="gallery-meta">
-                        <span class="badge bg-white text-dark mb-2">${escapeHtml(image.category || 'Campus')}</span>
-                        <h5 class="fw-bold text-white mb-2">${escapeHtml(image.title || 'Campus Life')}</h5>
-                        <button class="btn btn-white btn-sm" type="button" onclick="openLightbox('${escapeHtml(getImageUrl(image.image))}')">
-                            <i class="bi bi-arrows-fullscreen me-2"></i>View
-                        </button>
+                        <span class="gallery-chip">${escapeHtml(image.category || 'Campus')}</span>
+                        <div class="gallery-meta-row">
+                            <h5 class="gallery-title">${escapeHtml(image.title || 'Campus Life')}</h5>
+                            <button class="gallery-action" type="button" onclick="openLightbox('${escapeHtml(getImageUrl(image.image))}')">
+                                <i class="bi bi-arrows-fullscreen"></i>
+                                <span>View</span>
+                            </button>
+                        </div>
                     </div>
                 </article>
             `
