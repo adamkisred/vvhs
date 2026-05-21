@@ -96,6 +96,29 @@ const DEFAULT_MAP_EMBED_URL = 'https://maps.google.com/maps?width=100%25&height=
 const buildMapEmbedUrl = (query = 'Allagadda Andhra Pradesh') =>
     `https://maps.google.com/maps?width=100%25&height=600&hl=en&q=${encodeURIComponent(query)}&t=&z=14&ie=UTF8&iwloc=B&output=embed`;
 
+const extractMapQueryFromUrl = (url) => {
+    const pathname = decodeURIComponent(url.pathname || '');
+    const pathSegments = pathname.split('/').filter(Boolean);
+    const placeIndex = pathSegments.findIndex((segment) => segment.toLowerCase() === 'place');
+
+    if (placeIndex !== -1 && pathSegments[placeIndex + 1]) {
+        return pathSegments[placeIndex + 1].replace(/\+/g, ' ');
+    }
+
+    const coordinateMatch = pathname.match(/@(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)/);
+    if (coordinateMatch) {
+        return `${coordinateMatch[1]},${coordinateMatch[2]}`;
+    }
+
+    return (
+        url.searchParams.get('q') ||
+        url.searchParams.get('query') ||
+        url.searchParams.get('destination') ||
+        url.searchParams.get('address') ||
+        ''
+    );
+};
+
 const normalizeMapEmbedUrl = (url, fallbackQuery = 'Allagadda Andhra Pradesh') => {
     const value = String(url || '').trim();
 
@@ -109,11 +132,7 @@ const normalizeMapEmbedUrl = (url, fallbackQuery = 'Allagadda Andhra Pradesh') =
 
     try {
         const parsed = new URL(value);
-        const query =
-            parsed.searchParams.get('q') ||
-            parsed.searchParams.get('query') ||
-            parsed.searchParams.get('destination') ||
-            parsed.searchParams.get('address');
+        const query = extractMapQueryFromUrl(parsed);
 
         if (query) {
             return buildMapEmbedUrl(query);
