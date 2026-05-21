@@ -93,16 +93,36 @@ const sanitizeUrl = (value, fallback = '#') => {
 
 const DEFAULT_MAP_EMBED_URL = 'https://maps.google.com/maps?width=100%25&height=600&hl=en&q=Allagadda%20Andhra%20Pradesh&t=&z=14&ie=UTF8&iwloc=B&output=embed';
 
-const normalizeMapEmbedUrl = (url) => {
-    if (!url) {
+const buildMapEmbedUrl = (query = 'Allagadda Andhra Pradesh') =>
+    `https://maps.google.com/maps?width=100%25&height=600&hl=en&q=${encodeURIComponent(query)}&t=&z=14&ie=UTF8&iwloc=B&output=embed`;
+
+const normalizeMapEmbedUrl = (url, fallbackQuery = 'Allagadda Andhra Pradesh') => {
+    const value = String(url || '').trim();
+
+    if (!value) {
         return DEFAULT_MAP_EMBED_URL;
     }
 
-    if (url.includes('www.google.com/maps?q=')) {
-        return DEFAULT_MAP_EMBED_URL;
+    if (value.includes('/maps/embed') || value.includes('output=embed')) {
+        return value;
     }
 
-    return url;
+    try {
+        const parsed = new URL(value);
+        const query =
+            parsed.searchParams.get('q') ||
+            parsed.searchParams.get('query') ||
+            parsed.searchParams.get('destination') ||
+            parsed.searchParams.get('address');
+
+        if (query) {
+            return buildMapEmbedUrl(query);
+        }
+    } catch (error) {
+        return buildMapEmbedUrl(fallbackQuery);
+    }
+
+    return buildMapEmbedUrl(fallbackQuery);
 };
 
 const renderFallbackBanners = () => {
@@ -406,7 +426,7 @@ const applySettings = (settings) => {
 
     const mapIframe = qs('#mapFrame');
     if (mapIframe) {
-        mapIframe.src = normalizeMapEmbedUrl(settings.mapEmbedUrl);
+        mapIframe.src = normalizeMapEmbedUrl(settings.mapEmbedUrl, settings.address || settings.location || 'Allagadda Andhra Pradesh');
     }
 };
 
