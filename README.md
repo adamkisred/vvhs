@@ -67,15 +67,20 @@ JWT_SECRET=replace_with_a_long_random_secret
 JWT_EXPIRES_IN=1d
 ADMIN_USERNAME=admin
 ADMIN_PASSWORD=admin123
+MAIL_PROVIDER=smtp
 MAIL_HOST=smtp.gmail.com
 MAIL_PORT=587
 MAIL_SECURE=false
 MAIL_USER=your-email@example.com
 MAIL_PASS=your-16-character-gmail-app-password
+MAIL_FROM_EMAIL=admissions@yourdomain.com
+MAIL_FROM_NAME=VISWASHANTHI HIGH SCHOOL
 ADMISSION_RECEIVER_EMAIL=admissions@viswashanthischool.com
 MAIL_CONNECTION_TIMEOUT_MS=10000
 MAIL_GREETING_TIMEOUT_MS=10000
 MAIL_SOCKET_TIMEOUT_MS=20000
+RESEND_API_KEY=
+RESEND_FROM_EMAIL=
 ```
 
 Change the default admin password immediately after first login.
@@ -117,16 +122,21 @@ MONGODB_URI=your_mongodb_atlas_connection_string
 JWT_SECRET=your_long_random_secret
 ADMIN_USERNAME=admin
 ADMIN_PASSWORD=change_this_password
+MAIL_PROVIDER=resend
 MAIL_HOST=smtp.gmail.com
 MAIL_PORT=587
 MAIL_SECURE=false
 MAIL_USER=your-email@example.com
 MAIL_PASS=your-gmail-app-password
+MAIL_FROM_EMAIL=admissions@yourdomain.com
+MAIL_FROM_NAME=VISWASHANTHI HIGH SCHOOL
 ADMISSION_RECEIVER_EMAIL=admissions@viswashanthischool.com
 ALLOWED_ORIGINS=https://your-render-service.onrender.com
 MAIL_CONNECTION_TIMEOUT_MS=10000
 MAIL_GREETING_TIMEOUT_MS=10000
 MAIL_SOCKET_TIMEOUT_MS=20000
+RESEND_API_KEY=your_resend_api_key
+RESEND_FROM_EMAIL=admissions@yourdomain.com
 ```
 
 ### Important Notes For Free Testing
@@ -135,8 +145,9 @@ MAIL_SOCKET_TIMEOUT_MS=20000
 - Uploaded files on Render free instances are ephemeral, so images can be lost after restarts or redeploys. This setup is good for testing, not permanent media storage.
 - The site root will load the public website, and the admin login will be available at `/admin/login.html`.
 - After first deploy, log in and change the default admin password immediately.
-- For Gmail SMTP on Render, use a Google App Password, not your normal Gmail password.
-- Admission and contact forms now return immediately after saving, while email delivery continues in the background with SMTP timeouts to avoid Render request timeouts.
+- On free Render web services, SMTP ports `25`, `465`, and `587` are blocked as of September 26, 2025, so direct Gmail/SMTP delivery will not work there. Use `MAIL_PROVIDER=resend` with `RESEND_API_KEY` and a verified sender domain, or upgrade to a paid Render instance if you want SMTP.
+- For Gmail SMTP on local development or paid Render instances, use a Google App Password, not your normal Gmail password.
+- Admission and contact forms now return immediately after saving, while email delivery continues in the background with provider-aware logging to avoid Render request timeouts.
 
 ## API Endpoints
 

@@ -5,6 +5,21 @@ let transportPromise = null;
 const SMTP_CONNECTION_TIMEOUT = Number(getTrimmedEnv('MAIL_CONNECTION_TIMEOUT_MS', '10000')) || 10000;
 const SMTP_GREETING_TIMEOUT = Number(getTrimmedEnv('MAIL_GREETING_TIMEOUT_MS', '10000')) || 10000;
 const SMTP_SOCKET_TIMEOUT = Number(getTrimmedEnv('MAIL_SOCKET_TIMEOUT_MS', '20000')) || 20000;
+const RESEND_API_URL = 'https://api.resend.com/emails';
+
+const getMailProvider = () => {
+    const configuredProvider = getTrimmedEnv('MAIL_PROVIDER').toLowerCase();
+
+    if (configuredProvider) {
+        return configuredProvider;
+    }
+
+    if (getTrimmedEnv('RESEND_API_KEY')) {
+        return 'resend';
+    }
+
+    return 'smtp';
+};
 
 const formatMailError = (error) => {
     const message = String(error?.message || '');
@@ -23,6 +38,10 @@ const formatMailError = (error) => {
 
     if (message.includes('Greeting never received')) {
         return 'The SMTP server did not finish the handshake. Please recheck MAIL_HOST, MAIL_PORT, and MAIL_SECURE for Render.';
+    }
+
+    if (message.includes('resend')) {
+        return message;
     }
 
     return message || 'Unable to send email right now.';
@@ -62,7 +81,107 @@ const getTransport = async () => {
     return transportPromise;
 };
 
+const getMailFromEmail = () => getTrimmedEnv('MAIL_FROM_EMAIL') || getTrimmedEnv('RESEND_FROM_EMAIL') || getTrimmedEnv('MAIL_USER');
+const getMailFromName = () => getTrimmedEnv('MAIL_FROM_NAME') || 'VISWASHANTHI HIGH SCHOOL';
+
+const getSenderAddress = (schoolName) => {
+    const fromEmail = getMailFromEmail();
+    const fromName = schoolName || getMailFromName();
+
+    if (!fromEmail) {
+        return '';
+    }
+
+    return `"${fromName}" <${fromEmail}>`;
+};
+
+const normalizeRecipients = (value) => {
+    if (Array.isArray(value)) {
+        return value.filter(Boolean);
+    }
+
+    return value ? [value] : [];
+};
+
+const sendWithResend = async ({ from, to, replyTo, subject, html, text, attachments = [] }) => {
+    const apiKey = getTrimmedEnv('RESEND_API_KEY');
+
+    if (!apiKey) {
+        throw new Error('Resend API key is missing. Set RESEND_API_KEY in Render.');
+    }
+
+    if (typeof fetch !== 'function') {
+        throw new Error('Global fetch is unavailable in this Node runtime, so Resend cannot be used.');
+    }
+
+    const response = await fetch(RESEND_API_URL, {
+        method: 'POST',
+        headers: {
+            Authorization: `Bearer ${apiKey}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            from,
+            to: normalizeRecipients(to),
+            subject,
+            html,
+            text,
+            reply_to: replyTo || undefined,
+            attachments: attachments.length
+                ? attachments.map((attachment) => ({
+                    filename: attachment.filename,
+                    content: Buffer.isBuffer(attachment.content)
+                        ? attachment.content.toString('base64')
+                        : attachment.content
+                }))
+                : undefined
+        })
+    });
+
+    const data = await response.json().catch(() => ({}));
+
+    if (!response.ok) {
+        throw new Error(data?.message || data?.error || `Resend API request failed with status ${response.status}.`);
+    }
+
+    return data;
+};
+
+const sendEmail = async ({ from, to, replyTo, subject, html, text, attachments = [] }) => {
+    if (getMailProvider() === 'resend') {
+        return sendWithResend({ from, to, replyTo, subject, html, text, attachments });
+    }
+
+    const transport = await getTransport();
+
+    if (!transport) {
+        throw new Error('Backend mail configuration is missing.');
+    }
+
+    return transport.sendMail({
+        from,
+        to,
+        replyTo,
+        subject,
+        html,
+        text,
+        attachments
+    });
+};
+
 const verifyMailConfiguration = async () => {
+    if (getMailProvider() === 'resend') {
+        const hasResendConfig = Boolean(getTrimmedEnv('RESEND_API_KEY') && getMailFromEmail());
+
+        return {
+            configured: hasResendConfig,
+            verified: hasResendConfig,
+            message: hasResendConfig
+                ? 'Resend API mail configuration detected.'
+                : 'RESEND_API_KEY or MAIL_FROM_EMAIL is missing for Resend mail delivery.'
+        };
+    }
+
     const transport = await getTransport();
 
     if (!transport) {
@@ -89,9 +208,12 @@ const verifyMailConfiguration = async () => {
     }
 };
 
-const getSchoolMailbox = () => getTrimmedEnv('MAIL_USER');
+const getSchoolMailbox = () => getMailFromEmail() || getTrimmedEnv('MAIL_USER');
 const getAdminInbox = () => getTrimmedEnv('ADMISSION_RECEIVER_EMAIL') || getSchoolMailbox();
-const hasMailConfiguration = () => Boolean(getTrimmedEnv('MAIL_HOST') && getTrimmedEnv('MAIL_USER') && getTrimmedEnv('MAIL_PASS'));
+const hasMailConfiguration = () =>
+    getMailProvider() === 'resend'
+        ? Boolean(getTrimmedEnv('RESEND_API_KEY') && getMailFromEmail())
+        : Boolean(getTrimmedEnv('MAIL_HOST') && getTrimmedEnv('MAIL_USER') && getTrimmedEnv('MAIL_PASS'));
 
 const emailShell = ({ title, eyebrow, bodyHtml, accent = '#17365d', footerText = '' }) => `
     <div style="margin:0;padding:24px;background:#eef4fb;font-family:Arial,sans-serif;color:#1f2937;">
@@ -126,9 +248,7 @@ const infoTable = (rows) => `
 `;
 
 const sendAdmissionNotification = async (admission, schoolProfile = {}) => {
-    const transport = await getTransport();
-
-    if (!transport) {
+    if (!hasMailConfiguration()) {
         return {
             sent: false,
             message: 'Backend mail configuration is missing.'
@@ -136,7 +256,6 @@ const sendAdmissionNotification = async (admission, schoolProfile = {}) => {
     }
 
     const adminInbox = getAdminInbox();
-    const fromAddress = getSchoolMailbox();
 
     if (!adminInbox) {
         return {
@@ -147,6 +266,7 @@ const sendAdmissionNotification = async (admission, schoolProfile = {}) => {
 
     const schoolName = schoolProfile.schoolName || 'VISWASHANTHI HIGH SCHOOL';
     const schoolAddress = schoolProfile.schoolAddress || 'Allagadda, Andhra Pradesh';
+    const senderAddress = getSenderAddress(schoolName);
     const submittedAt = new Date(admission.createdAt).toLocaleString('en-IN', {
         dateStyle: 'medium',
         timeStyle: 'short'
@@ -200,8 +320,8 @@ const sendAdmissionNotification = async (admission, schoolProfile = {}) => {
     });
 
     const mailResults = await Promise.allSettled([
-        transport.sendMail({
-            from: `"${schoolName}" <${fromAddress}>`,
+        sendEmail({
+            from: senderAddress,
             to: adminInbox,
             replyTo: admission.email,
             subject: `New admission enquiry: ${admission.studentName}`,
@@ -218,8 +338,8 @@ Address: ${admission.address}
 Submitted On: ${submittedAt}
             `.trim()
         }),
-        transport.sendMail({
-            from: `"${schoolName}" <${fromAddress}>`,
+        sendEmail({
+            from: senderAddress,
             to: admission.email,
             subject: `${schoolName} - Admission Application Received`,
             html: applicantHtml,
@@ -250,9 +370,7 @@ Our team will contact you soon with the next steps.
 };
 
 const sendAdmissionsReportEmail = async ({ recipientEmail, pdfBuffer, fileName, admissions, schoolName, schoolAddress }) => {
-    const transport = await getTransport();
-
-    if (!transport) {
+    if (!hasMailConfiguration()) {
         throw new Error('Backend mail configuration is missing.');
     }
 
@@ -274,8 +392,8 @@ const sendAdmissionsReportEmail = async ({ recipientEmail, pdfBuffer, fileName, 
         footerText: `${schoolName || 'VISWASHANTHI HIGH SCHOOL'} | ${schoolAddress || 'Allagadda, Andhra Pradesh'}`
     });
 
-    await transport.sendMail({
-        from: `"${schoolName || 'VISWASHANTHI HIGH SCHOOL'}" <${getSchoolMailbox()}>`,
+    await sendEmail({
+        from: getSenderAddress(schoolName || 'VISWASHANTHI HIGH SCHOOL'),
         to: recipientEmail,
         subject: `${schoolName || 'VISWASHANTHI HIGH SCHOOL'} Admissions Report`,
         html: reportHtml,
@@ -291,14 +409,12 @@ const sendAdmissionsReportEmail = async ({ recipientEmail, pdfBuffer, fileName, 
 };
 
 const sendContactNotification = async ({ contact, schoolName, schoolAddress }) => {
-    const transport = await getTransport();
-
-    if (!transport) {
+    if (!hasMailConfiguration()) {
         throw new Error('Backend mail configuration is missing.');
     }
 
     const adminInbox = getAdminInbox();
-    const fromAddress = getSchoolMailbox();
+    const senderAddress = getSenderAddress(schoolName);
     const submittedAt = new Date().toLocaleString('en-IN', {
         dateStyle: 'medium',
         timeStyle: 'short'
@@ -344,8 +460,8 @@ const sendContactNotification = async ({ contact, schoolName, schoolAddress }) =
     });
 
     await Promise.all([
-        transport.sendMail({
-            from: `"${schoolName}" <${fromAddress}>`,
+        sendEmail({
+            from: senderAddress,
             to: adminInbox,
             replyTo: contact.email,
             subject: `New contact enquiry from ${contact.name}`,
@@ -359,8 +475,8 @@ Submitted On: ${submittedAt}
 Message: ${contact.message}
             `.trim()
         }),
-        transport.sendMail({
-            from: `"${schoolName}" <${fromAddress}>`,
+        sendEmail({
+            from: senderAddress,
             to: contact.email,
             subject: `${schoolName} - We received your message`,
             html: visitorHtml,
@@ -382,5 +498,6 @@ module.exports = {
     sendContactNotification,
     formatMailError,
     verifyMailConfiguration,
-    hasMailConfiguration
+    hasMailConfiguration,
+    getMailProvider
 };

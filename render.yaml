@@ -30,11 +30,21 @@ services:
         sync: false
       - key: MAIL_SECURE
         sync: false
+      - key: MAIL_PROVIDER
+        sync: false
       - key: MAIL_USER
         sync: false
       - key: MAIL_PASS
         sync: false
+      - key: MAIL_FROM_EMAIL
+        sync: false
+      - key: MAIL_FROM_NAME
+        value: VISWASHANTHI HIGH SCHOOL
       - key: ADMISSION_RECEIVER_EMAIL
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false
+      - key: RESEND_FROM_EMAIL
         sync: false
       - key: MAIL_CONNECTION_TIMEOUT_MS
         value: "10000"
