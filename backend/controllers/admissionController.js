@@ -2,7 +2,7 @@
 const { validationResult } = require('express-validator');
 const Admission = require('../models/Admission');
 const Settings = require('../models/Settings');
-const { sendAdmissionNotification, sendAdmissionsReportEmail, formatMailError } = require('../utils/emailService');
+const { sendAdmissionNotification, sendAdmissionsReportEmail, formatMailError, hasMailConfiguration } = require('../utils/emailService');
 const { buildAdmissionsPdfBuffer } = require('../utils/admissionPdf');
 
 const ADMISSION_STATUSES = ['New', 'Reviewed', 'Contacted', 'Closed'];
@@ -36,6 +36,21 @@ const getSchoolProfile = async () => {
     };
 };
 
+const queueAdmissionNotification = async (admission) => {
+    if (!hasMailConfiguration()) {
+        console.warn(`Admission ${admission._id} saved without mail delivery because SMTP is not configured.`);
+        return;
+    }
+
+    try {
+        const schoolProfile = await getSchoolProfile();
+        await sendAdmissionNotification(admission, schoolProfile);
+        console.log(`Admission notification emails sent successfully for ${admission._id}.`);
+    } catch (error) {
+        console.error(`Admission notification failed for ${admission._id}:`, formatMailError(error));
+    }
+};
+
 const getAdmissions = async (req, res) => {
     const admissions = await Admission.find().sort({ createdAt: -1 });
     res.status(200).json({ success: true, admissions });
@@ -53,26 +68,13 @@ const createAdmission = async (req, res) => {
     }
 
     const admission = await Admission.create(req.body);
-    let emailResult = {
-        sent: false,
-        message: 'Admission saved successfully.'
-    };
-
-    try {
-        emailResult = await sendAdmissionNotification(admission, await getSchoolProfile());
-    } catch (error) {
-        console.error('Admission notification failed:', error.message);
-        emailResult = {
-            sent: false,
-            message: `Admission saved successfully, but email notification could not be sent. ${formatMailError(error)}`
-        };
-    }
+    queueAdmissionNotification(admission);
 
     res.status(201).json({
         success: true,
-        message: emailResult.sent
-            ? 'Application submitted successfully'
-            : `Application saved successfully. ${emailResult.message}`,
+        message: hasMailConfiguration()
+            ? 'Application submitted successfully. Confirmation email is being processed.'
+            : 'Application submitted successfully. Our admissions team will review it shortly.',
         applicationId: admission._id,
         admission
     });

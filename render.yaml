@@ -36,3 +36,9 @@ services:
         sync: false
       - key: ADMISSION_RECEIVER_EMAIL
         sync: false
+      - key: MAIL_CONNECTION_TIMEOUT_MS
+        value: "10000"
+      - key: MAIL_GREETING_TIMEOUT_MS
+        value: "10000"
+      - key: MAIL_SOCKET_TIMEOUT_MS
+        value: "20000"

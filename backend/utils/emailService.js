@@ -2,6 +2,9 @@ const nodemailer = require('nodemailer');
 
 const getTrimmedEnv = (key, fallback = '') => String(process.env[key] ?? fallback).trim();
 let transportPromise = null;
+const SMTP_CONNECTION_TIMEOUT = Number(getTrimmedEnv('MAIL_CONNECTION_TIMEOUT_MS', '10000')) || 10000;
+const SMTP_GREETING_TIMEOUT = Number(getTrimmedEnv('MAIL_GREETING_TIMEOUT_MS', '10000')) || 10000;
+const SMTP_SOCKET_TIMEOUT = Number(getTrimmedEnv('MAIL_SOCKET_TIMEOUT_MS', '20000')) || 20000;
 
 const formatMailError = (error) => {
     const message = String(error?.message || '');
@@ -12,6 +15,14 @@ const formatMailError = (error) => {
 
     if (message.includes('Missing credentials')) {
         return 'Backend mail configuration is incomplete. Please check MAIL_USER and MAIL_PASS in backend/.env.';
+    }
+
+    if (message.includes('Connection timeout')) {
+        return 'The mail server took too long to respond. Please verify the SMTP host, port, firewall access, and Render environment variables.';
+    }
+
+    if (message.includes('Greeting never received')) {
+        return 'The SMTP server did not finish the handshake. Please recheck MAIL_HOST, MAIL_PORT, and MAIL_SECURE for Render.';
     }
 
     return message || 'Unable to send email right now.';
@@ -33,6 +44,9 @@ const createTransportFromEnv = async () => {
         port,
         secure,
         requireTLS: !secure,
+        connectionTimeout: SMTP_CONNECTION_TIMEOUT,
+        greetingTimeout: SMTP_GREETING_TIMEOUT,
+        socketTimeout: SMTP_SOCKET_TIMEOUT,
         auth: {
             user,
             pass
@@ -77,6 +91,7 @@ const verifyMailConfiguration = async () => {
 
 const getSchoolMailbox = () => getTrimmedEnv('MAIL_USER');
 const getAdminInbox = () => getTrimmedEnv('ADMISSION_RECEIVER_EMAIL') || getSchoolMailbox();
+const hasMailConfiguration = () => Boolean(getTrimmedEnv('MAIL_HOST') && getTrimmedEnv('MAIL_USER') && getTrimmedEnv('MAIL_PASS'));
 
 const emailShell = ({ title, eyebrow, bodyHtml, accent = '#17365d', footerText = '' }) => `
     <div style="margin:0;padding:24px;background:#eef4fb;font-family:Arial,sans-serif;color:#1f2937;">
@@ -184,7 +199,7 @@ const sendAdmissionNotification = async (admission, schoolProfile = {}) => {
         footerText: `${schoolName} | ${schoolAddress}`
     });
 
-    await Promise.all([
+    const mailResults = await Promise.allSettled([
         transport.sendMail({
             from: `"${schoolName}" <${fromAddress}>`,
             to: adminInbox,
@@ -220,6 +235,14 @@ Our team will contact you soon with the next steps.
             `.trim()
         })
     ]);
+
+    const failures = mailResults.filter((result) => result.status === 'rejected');
+
+    if (failures.length) {
+        const error = new Error(formatMailError(failures[0].reason));
+        error.details = failures.map((result) => result.reason);
+        throw error;
+    }
 
     return {
         sent: true
@@ -358,5 +381,6 @@ module.exports = {
     sendAdmissionsReportEmail,
     sendContactNotification,
     formatMailError,
-    verifyMailConfiguration
+    verifyMailConfiguration,
+    hasMailConfiguration
 };

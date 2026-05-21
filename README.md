@@ -71,8 +71,11 @@ MAIL_HOST=smtp.gmail.com
 MAIL_PORT=587
 MAIL_SECURE=false
 MAIL_USER=your-email@example.com
-MAIL_PASS=your-email-password
+MAIL_PASS=your-16-character-gmail-app-password
 ADMISSION_RECEIVER_EMAIL=admissions@viswashanthischool.com
+MAIL_CONNECTION_TIMEOUT_MS=10000
+MAIL_GREETING_TIMEOUT_MS=10000
+MAIL_SOCKET_TIMEOUT_MS=20000
 ```
 
 Change the default admin password immediately after first login.
@@ -121,6 +124,9 @@ MAIL_USER=your-email@example.com
 MAIL_PASS=your-gmail-app-password
 ADMISSION_RECEIVER_EMAIL=admissions@viswashanthischool.com
 ALLOWED_ORIGINS=https://your-render-service.onrender.com
+MAIL_CONNECTION_TIMEOUT_MS=10000
+MAIL_GREETING_TIMEOUT_MS=10000
+MAIL_SOCKET_TIMEOUT_MS=20000
 ```
 
 ### Important Notes For Free Testing
@@ -129,6 +135,8 @@ ALLOWED_ORIGINS=https://your-render-service.onrender.com
 - Uploaded files on Render free instances are ephemeral, so images can be lost after restarts or redeploys. This setup is good for testing, not permanent media storage.
 - The site root will load the public website, and the admin login will be available at `/admin/login.html`.
 - After first deploy, log in and change the default admin password immediately.
+- For Gmail SMTP on Render, use a Google App Password, not your normal Gmail password.
+- Admission and contact forms now return immediately after saving, while email delivery continues in the background with SMTP timeouts to avoid Render request timeouts.
 
 ## API Endpoints
 
